@@ -1,164 +1,164 @@
 # Ontology Discovery Catalog (Brain Builder)
 
-**Ontology Discovery Catalog** — это специализированная поисковая система и библиотека эталонных отраслевых бизнес-моделей (онтологий, словарей, таксономий и стандартов). Проект является ключевым модулем системы **Brain Builder** и предназначен для быстрого погружения бизнес-консультантов, системных аналитиков и AI-агентов в предметную область нового клиента (клиники, завода, ритейл-сети, финтех-компании и т.д.).
+**Ontology Discovery Catalog** is a specialized search engine and curated library of benchmark industry business models (ontologies, vocabularies, taxonomies, and standards). As a core module of the **Brain Builder** ecosystem, it is designed to rapidly onboard business consultants, system analysts, and AI agents into the domain of a new client (e.g., healthcare clinics, manufacturing plants, retail chains, fintech companies).
 
 ---
 
-## 🌟 Ключевые возможности
+## 🌟 Key Features
 
-- **Автоматический сбор и агрегация данных** из ведущих мировых семантических репозиториев (LOV, W3ID, W3C, Schema.org, GS1, HL7 FHIR, FIBO и др.).
-- **Чистота данных (Zero-Shot AI on Ingestion)**: В базу попадают исключительно официальные тексты, описания и структуры из первоисточников без искажения или галлюцинаций AI.
-- **Продвинутый полнотекстовый поиск (SQLite FTS5 + BM25)**: Мгновенный поиск с поддержкой синонимов, префиксных совпадений и взвешенного ранжирования (заголовок, описание, теги, домен).
-- **Многомерная фасетная фильтрация**: Фильтрация по типу ресурса, отрасли, формату файлов (TTL, OWL, JSON-LD, RDF), статусу верификации, географическому региону и масштабу покрытия.
-- **On-Demand AI Обогащение**: Возможность точечного обогащения слабых записей (генерация `short_description`, тегов, определение региона и охвата) через LLM (с поддержкой GitHub Models API / Azure Inference) по явному запросу пользователя.
-- **Генерация стартовых опросников**: Преобразование сложных семантических сущностей (например, `Recipe`, `Batch`, `Observation`, `TradeItem`) в понятные человеческие вопросы для интервью с представителями бизнеса.
+- **Automated Ingestion & Aggregation**: Harvests data from leading global semantic repositories (LOV, W3ID, W3C, Schema.org, GS1, HL7 FHIR, FIBO, etc.).
+- **Data Purity (Zero-Shot AI on Ingestion)**: Exclusively stores official texts, descriptions, and structures directly from primary sources, completely eliminating AI hallucinations or distortions during data collection.
+- **Advanced Full-Text Search (SQLite FTS5 + BM25)**: Delivers instant search capabilities with built-in support for synonyms, prefix matching, and weighted ranking across titles, descriptions, tags, and domain fields.
+- **Multidimensional Faceted Filtering**: Seamlessly filters resources by type, industry, file format (TTL, OWL, JSON-LD, RDF), verification status, geographic region, and coverage scope.
+- **On-Demand AI Enrichment**: Enables targeted enrichment of sparse records (generating `short_description`, tags, country/region, and coverage scope) via LLMs (supporting GitHub Models API / Azure Inference) upon explicit user request.
+- **Interview Questionnaire Generation**: Transforms complex semantic entities (e.g., `Recipe`, `Batch`, `Observation`, `TradeItem`) into natural, human-friendly interview questions tailored for business stakeholders.
 
 ---
 
-## 🏗 Архитектура и структура проекта
+## 🏗 Architecture & Project Structure
 
-Проект построен на базе легковесного и быстрого стека: **FastAPI + SQLite (FTS5) + Vanilla JS/CSS/HTML**.
+The project is built on a lightweight, high-performance stack: **FastAPI + SQLite (FTS5) + Vanilla JS/CSS/HTML**.
 
 ```
 c:\Apps\ont\
-├── main.py                     # Главный FastAPI-сервер и API-эндпоинты
-├── parser.py                   # Скрипт инициализации БД и сбора данных из LOV, W3ID, GitHub
-├── setup_fts.py                # Скрипт создания и настройки полнотекстового индекса FTS5
-├── classify.py                 # Скрипт rule-based классификации и нормализации данных
-├── check_quality.py            # Утилита проверки качества данных и подсчета метрик
-├── cleanup.py                  # Утилита очистки базы от мусорных и нерелевантных записей
-├── patch.py                    # Скрипт миграции и добавления новых колонок/свойств в БД
-├── requirements.txt            # Зависимости Python (fastapi, uvicorn, requests и др.)
-├── ontology.db                 # SQLite база данных (создается автоматически)
-├── static/                     # Статические файлы веб-интерфейса
-│   └── index.html              # Одностраничное веб-приложение (SPA) с дашбордом и каталогом
-├── catalog-quality-guideline.md # Руководство разработчика по нормализации и качеству
-└── ontology-discovery-concept.md # Концептуальное описание архитектуры и бизнес-логики
+├── main.py                     # Main FastAPI server and REST API endpoints
+├── parser.py                   # Database initialization and ingestion script (LOV, W3ID, GitHub)
+├── setup_fts.py                # Setup script for FTS5 full-text search virtual tables & triggers
+├── classify.py                 # Rule-based classification and data normalization script
+├── check_quality.py            # Quality scoring utility and database metrics analyzer
+├── cleanup.py                  # Database pruning utility to remove sparse or non-semantic records
+├── patch.py                    # Database migration script for adding new columns/properties
+├── requirements.txt            # Python dependencies (fastapi, uvicorn, requests, etc.)
+├── ontology.db                 # SQLite database (automatically generated)
+├── static/                     # Web frontend static assets
+│   └── index.html              # Single Page Application (SPA) dashboard and catalog UI
+├── catalog-quality-guideline.md # Developer guidelines for catalog normalization and quality
+└── ontology-discovery-concept.md # Conceptual architecture and business logic documentation
 ```
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### 1. Установка зависимостей
+### 1. Install Dependencies
 
-Убедитесь, что у вас установлен Python 3.8+ и выполните команду:
+Ensure Python 3.8+ is installed, then run:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Инициализация БД и сбор данных
+### 2. Initialize Database & Ingest Data
 
-Запустите парсер для создания базы данных `ontology.db`, загрузки базовых эталонов и получения актуальных словарей из внешних API (LOV, GitHub/W3ID):
+Run the parser to create `ontology.db`, load benchmark standards, and fetch active vocabularies from external APIs (LOV, GitHub/W3ID):
 
 ```bash
 python parser.py
 ```
 
-> **Примечание:** Для работы с GitHub API используется переменная окружения `GITHUB_TOKEN`. Вы можете задать её перед запуском:
-> `export GITHUB_TOKEN="your_personal_access_token"` (Linux/Mac) или `$env:GITHUB_TOKEN="your_personal_access_token"` (Windows PowerShell).
+> **Note:** To interact with the GitHub API during W3ID ingestion, the script uses the `GITHUB_TOKEN` environment variable. You can set it before running:
+> `export GITHUB_TOKEN="your_personal_access_token"` (Linux/Mac) or `$env:GITHUB_TOKEN="your_personal_access_token"` (Windows PowerShell).
 
-### 3. Настройка полнотекстового поиска (FTS5)
+### 3. Setup Full-Text Search (FTS5)
 
-После заполнения таблицы `resources` создайте виртуальную таблицу `resources_fts` для работы быстрого поиска BM25:
+Once the `resources` table is populated, generate the `resources_fts` virtual table for BM25 search ranking:
 
 ```bash
 python setup_fts.py
 ```
 
-### 4. Очистка и классификация (опционально)
+### 4. Pruning & Classification (Optional)
 
-Для удаления мусорных записей и запуска rule-based нормализации (распределение по отраслям, простановка флагов `country_or_region` и `coverage_scope`):
+To remove non-semantic records and execute rule-based normalization (assigning industries, `country_or_region`, and `coverage_scope`):
 
 ```bash
 python cleanup.py
 python classify.py
 ```
 
-### 5. Запуск веб-сервера FastAPI
+### 5. Start the FastAPI Server
 
-Запустите сервер разработки Uvicorn:
+Launch the Uvicorn development server:
 
 ```bash
 python main.py
 ```
 
-Или через командную строку:
+Alternatively, run via CLI:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Приложение будет доступно по адресу: **http://localhost:8000**  
-Интерактивная документация API (Swagger UI): **http://localhost:8000/docs**
+- Web Application SPA: **http://localhost:8000**  
+- Interactive API Documentation (Swagger UI): **http://localhost:8000/docs**
 
 ---
 
-## 🛠 Описание основных скриптов
+## 🛠 Core Scripts Overview
 
 ### `main.py`
-Основное приложение FastAPI. Содержит эндпоинты:
-- `GET /api/resources` — получение списка ресурсов с пагинацией, фильтрацией и FTS-поиском.
-- `GET /api/filters` — агрегация счетчиков для боковой панели фильтров (фасеты).
-- `POST /api/resources/{id}/enrich` — вызов LLM (gpt-4o-mini) для автоматической генерации `short_description` и тегов.
-- `GET /` — раздача статического SPA-интерфейса (`static/index.html`).
+The primary FastAPI application serving the REST API and static frontend:
+- `GET /api/resources` — Retrieves paginated resources with filtering, facet matching, and FTS search.
+- `GET /api/filters` — Aggregates facet counts for the sidebar filter UI.
+- `POST /api/resources/{id}/enrich` — Triggers an LLM (gpt-4o-mini) to generate a structured `short_description` and tags.
+- `GET /` — Serves the frontend SPA (`static/index.html`).
 
 ### `parser.py`
-Отвечает за первичное наполнение базы:
-1. Создает таблицу `resources`.
-2. Загружает 28+ эталонных высококачественных онтологий (`INITIAL_DATA`).
-3. Запрашивает REST API Linked Open Vocabularies (LOV).
-4. Обходит репозиторий `perma-id/w3id.org` на GitHub, извлекая README.md файлы проектов.
+Handles initial database seeding and remote fetching:
+1. Creates the `resources` table.
+2. Inserts 28+ benchmark, high-quality ontologies (`INITIAL_DATA`).
+3. Queries the Linked Open Vocabularies (LOV) REST API.
+4. Crawls the `perma-id/w3id.org` GitHub repository to extract project READMEs.
 
 ### `setup_fts.py`
-Создает виртуальную таблицу SQLite FTS5 (`resources_fts`), синхронизирует её с основной таблицей `resources` и настраивает триггеры (`AFTER INSERT`, `AFTER UPDATE`, `AFTER DELETE`) для автоматического поддержания поискового индекса в актуальном состоянии.
+Creates the SQLite FTS5 virtual table (`resources_fts`), synchronizes it with `resources`, and establishes SQLite triggers (`AFTER INSERT`, `AFTER UPDATE`, `AFTER DELETE`) to keep the search index automatically updated.
 
 ### `classify.py`
-Выполняет rule-based классификацию существующих записей по ключевым словам в заголовках и описаниях. Заполняет поля `short_description`, `country_or_region` (Global, EU, US, UK и др.), `coverage_scope` (Universal, Domain-specific, Regional) и `confidence`.
+Performs rule-based classification of existing records using keyword matching across titles and descriptions. Populates `short_description`, `country_or_region` (Global, EU, US, UK, etc.), `coverage_scope` (Universal, Domain-specific, Regional), and `confidence`.
 
 ### `check_quality.py`
-Анализирует текущее состояние базы данных, рассчитывает средний показатель качества (Quality Score) и выводит подробную статистику по статусам (`verified`, `candidate`, `weak`), форматам и доменам.
+Analyzes the database to compute the average Quality Score and outputs detailed metrics categorized by status (`verified`, `candidate`, `weak`), file formats, and domain distribution.
 
 ### `cleanup.py`
-Удаляет из базы нерелевантные, пустые или технические записи (например, проекты W3ID, не являющиеся онтологиями или словарями), повышая общую чистоту и релевантность каталога.
+Prunes irrelevant, empty, or non-semantic entries (e.g., W3ID redirects that lack actual ontology files or descriptions), ensuring high relevance across the catalog.
 
 ### `patch.py`
-Скрипт миграции схемы БД. Добавляет новые столбцы (например, `short_description`, `country_or_region`, `coverage_scope`, `confidence`), если они отсутствовали в старых версиях базы данных.
+Database schema migration script. Dynamically adds new columns (`short_description`, `country_or_region`, `coverage_scope`, `confidence`) if they are missing from older database builds.
 
 ---
 
-## 📊 Модель данных (SQLite)
+## 📊 Data Model (SQLite)
 
-Таблица `resources` содержит следующие ключевые поля:
-- `id` (TEXT, Primary Key) — уникальный идентификатор (например, `schema-org`, `lov-foaf`).
-- `title` (TEXT) — название ресурса.
-- `w3id` (TEXT) — постоянный URI или ссылка на пространство имен.
-- `type` (TEXT) — тип (`ontology`, `vocabulary`, `taxonomy`, `framework`, `standard`).
-- `description` (TEXT) — полное оригинальное описание.
-- `short_description` (TEXT) — краткая выжимка (140-220 символов) для карточек.
-- `domain` (TEXT) — предметная область / домен.
-- `quality` (REAL) — расчетный показатель качества (0.0 - 1.0).
-- `status` (TEXT) — статус верификации (`verified`, `candidate`, `weak`).
-- `source` (TEXT) — источник загрузки (`schema.org`, `lov`, `w3id.org`, `w3c.org`).
-- `questions_hint` (TEXT) — примеры бизнес-вопросов для генератора опросников.
-- `targets`, `formats`, `industry`, `tags`, `entities` (JSON) — списки и массивы метаданных.
-- `country_or_region` (TEXT) — регион применения (`Global`, `EU`, `US` и т.д.).
-- `coverage_scope` (TEXT) — охват (`Universal`, `Domain-specific`, `Regional`).
-- `confidence` (TEXT) — уверенность в классификации (`High`, `Medium`, `Low`).
+The `resources` table contains the following primary fields:
+- `id` (TEXT, Primary Key) — Unique identifier (e.g., `schema-org`, `lov-foaf`).
+- `title` (TEXT) — Resource title.
+- `w3id` (TEXT) — Permanent URI or namespace link.
+- `type` (TEXT) — Classification type (`ontology`, `vocabulary`, `taxonomy`, `framework`, `standard`).
+- `description` (TEXT) — Full original description from the publisher.
+- `short_description` (TEXT) — Concise summary (140-220 characters) for UI cards.
+- `domain` (TEXT) — Subject matter / domain area.
+- `quality` (REAL) — Calculated Quality Score (0.0 - 1.0).
+- `status` (TEXT) — Verification status (`verified`, `candidate`, `weak`).
+- `source` (TEXT) — Ingestion source (`schema.org`, `lov`, `w3id.org`, `w3c.org`).
+- `questions_hint` (TEXT) — Sample business interview questions for the questionnaire generator.
+- `targets`, `formats`, `industry`, `tags`, `entities` (JSON) — JSON arrays of metadata and classes.
+- `country_or_region` (TEXT) — Geographic jurisdiction (`Global`, `EU`, `US`, etc.).
+- `coverage_scope` (TEXT) — Applicability scope (`Universal`, `Domain-specific`, `Regional`).
+- `confidence` (TEXT) — Classification confidence level (`High`, `Medium`, `Low`).
 
 ---
 
-## 🔒 Безопасность и ключи API
+## 🔒 Security & API Keys
 
-В проекте реализована защита от утечек учетных данных (Secret Scanning Protection). Все внешние токены (например, для GitHub API или Azure AI Inference) запрашиваются из переменных окружения:
+The project implements Secret Scanning Protection best practices. All external API tokens (e.g., GitHub Personal Access Tokens or Azure AI credentials) are dynamically loaded from environment variables:
 ```python
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
 ```
-**Никогда не хардкодьте реальные токены (например, `github_pat_...`) в исходном коде скриптов.**
+**Never hardcode real credentials or personal access tokens in the source code.**
 
 ---
 
-## 📄 Лицензия
+## 📄 License
 
-Проект является частью закрытой экосистемы **Brain Builder**. Все права на оригинальные онтологии и стандарты принадлежат их соответствующим издателям (W3C, GS1, OMG, ISO, ETSI и др.).
+This project is part of the closed **Brain Builder** ecosystem. All rights to the original ontologies, vocabularies, and standards belong to their respective publishers (W3C, GS1, OMG, ISO, ETSI, etc.).
